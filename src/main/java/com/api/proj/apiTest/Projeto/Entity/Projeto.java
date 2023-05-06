@@ -1,13 +1,17 @@
 package com.api.proj.apiTest.Projeto.Entity;
 
+import com.api.proj.apiTest.Membro.Entity.Membro;
 import com.api.proj.apiTest.Projeto.Enum.Classificacao;
 import com.api.proj.apiTest.Projeto.DTO.ProjetoDTO;
 import com.api.proj.apiTest.Projeto.Enum.Status;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
+@EqualsAndHashCode(of = "id")
 public class Projeto {
 
     @Id
@@ -41,13 +45,16 @@ public class Projeto {
     @Enumerated(EnumType.ORDINAL)
     private Classificacao classificacao;
 
+    @ManyToMany
+    @Column(name = "membro")
+    private List<Membro> membro;
+
     public Projeto() {
     }
 
-    public Projeto(Long id, String nome, LocalDate dataInicio, String gerente, LocalDate previsaoTermino,
+    public Projeto(String nome, LocalDate dataInicio, String gerente, LocalDate previsaoTermino,
                    LocalDate realTermino, double orcamentoTotal, String descricao, Status status,
-                   Classificacao classificacao) {
-        this.id = id;
+                   Classificacao classificacao, List<Membro> membro) {
         this.nome = nome;
         this.dataInicio = dataInicio;
         this.gerente = gerente;
@@ -57,10 +64,11 @@ public class Projeto {
         this.descricao = descricao;
         this.status = status;
         this.classificacao = classificacao;
+        this.membro = membro;
     }
 
     public Projeto(ProjetoDTO projetoDTO){
-        this.nome = projetoDTO.name();
+        this.nome = projetoDTO.nome();
         this.dataInicio = projetoDTO.dataInicio();
         this.gerente = projetoDTO.gerente();
         this.previsaoTermino = projetoDTO.previsaoTermino();
@@ -69,6 +77,8 @@ public class Projeto {
         this.descricao = projetoDTO.descricao();
         this.status = projetoDTO.status();
         this.classificacao = projetoDTO.classificacao();
+        this.membro = projetoDTO.membros();
+
     }
 
     public Long getId() {
@@ -149,5 +159,9 @@ public class Projeto {
 
     public void setClassificacao(Classificacao classificacao) {
         this.classificacao = classificacao;
+    }
+
+    public List<Membro> getMembro() {
+        return membro;
     }
 }
